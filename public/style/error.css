@@ -1,0 +1,62 @@
+.error-section{
+    margin-top: 10rem;
+}
+
+.error-section .container h1{
+    font-size: 15rem;
+    text-align: center;
+    color: transparent;
+    background-image: url("/images/error-background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-clip: text;
+}
+
+.error-div{
+    place-items: center;
+    font-size: 1.5rem;
+}
+
+.error-div p{
+    width: 60%;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.error-btn{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.error-btn button{
+    background: var(--primary-blue-color);
+    padding: 1rem 3rem;
+    border-radius: 3rem;
+    font-weight: bold;
+    color: white;
+}
+
+.error-btn button:hover{
+    box-shadow: 0 0 10px var(--primary-blue-color);
+}
+
+.error-btn button:active{
+    opacity: .7;
+}
+
+@media screen and (max-width: 635px){
+    .error-section .container h1{
+        font-size: 80px;
+    }
+
+    .error-div h2{
+        font-size: 20px;
+    }
+
+    .error-div p{
+        font-size: 10px;
+        width: 100%;
+    }
+}

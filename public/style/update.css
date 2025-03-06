@@ -1,0 +1,124 @@
+.update-page{
+    position: absolute;
+    background-color: var(--primary-black-color);
+    border-radius: 2rem;
+    padding: 2rem;
+    border: 2px solid var(--primary-lite-color);
+    width: 50vw;
+    display: none;
+    box-shadow: 0 0 2rem var(--primary-lite-color);
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    -webkit-transform: translate(50%, -50%);
+    -moz-transform: translate(50%, -50%);
+    -ms-transform: translate(50%, -50%);
+    -o-transform: translate(50%, -50%);
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -o-border-radius: 2rem;
+}
+
+.update-page .close{
+    display: flex;
+    justify-content: end;
+    
+}
+
+.update-page .close i{
+    text-align: end;
+    cursor: pointer;
+    font-size: 1.8rem;
+
+    &:hover{
+        opacity: .8;
+    }
+
+    &:active{
+        color: transparent;
+    }
+}
+
+.update-page h1{
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.update-form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.update-form div input{
+    border: 1px solid var(--primary-lite-color);
+    padding: 1rem 1.5rem;
+    border-radius: 2rem;
+    width: 100%;
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -o-border-radius: 2rem;
+}
+
+.update-form button{
+    background-color: var(--primary-blue-color);
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    color: white;
+    -o-border-radius: 2rem;
+    padding: 1rem 2rem;
+
+    &:hover{
+        box-shadow: 0 0 10px var(--primary-blue-color);
+        font-weight: bold;
+    }
+}
+
+.message{
+    display: none;
+    background-color: #B6EACD;
+    color: black;
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+    border: 1px solid #199F5E;
+    font-weight: 700;
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -o-border-radius: 2rem;
+    animation: message-anim .5s;
+}
+
+.error-message {
+    display: block;
+    background-color: #FEE3E1;
+    color: #FB3D33;
+    border: 1px solid #FB3D33;
+}
+
+@keyframes message-anim{
+    from{
+        opacity: 0;
+        display: none;      
+    }
+
+    to{
+        opacity: 1;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 635px){
+    .update-form div input{
+        font-size: 10px;
+    }
+}

@@ -1,0 +1,128 @@
+main{
+    margin-top: 10rem;
+}
+
+.main-heading{
+    background: linear-gradient(to right, var(--primary-blue-color), var(--primary-pink-color), var(--primary-blue-color));
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
+    text-align: center;
+    font-size: 5rem;
+    margin: auto;
+    
+}
+
+.main-desciption{
+    font-size: 1.5rem;
+    text-align: center;
+    width: 62%;
+    margin: 1.5rem auto;
+}
+
+.shorten-form{
+    padding: 3px;
+    border: 2px solid var(--primary-lite-color);
+    border-radius: 2.5rem;
+    -webkit-border-radius: 2.5rem;
+    -moz-border-radius: 2.5rem;
+    -ms-border-radius: 2.5rem;
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    margin: 0 auto;
+    -o-border-radius: 2.5rem;
+    width: 62rem;
+    padding-left: 1.3rem;
+
+    & div{
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+}
+
+.shorten-form div i{
+    font-size: 1.3rem;
+    padding: 1rem .5rem;
+
+}
+
+.shorten-form div input{
+    padding: 1rem .5rem;
+    width: 100%;
+    caret-color: var(--primary-pink-color);
+}
+
+.shorten-form button{
+    background: var(--primary-blue-color);
+    width: inline;
+    font-weight: bold;
+    border-radius: 2rem;
+    padding: 1.3rem 2.5rem;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.shorten-form button:active{
+    opacity: .7;
+}
+
+.sm-add-btn{
+    display: none;
+}
+
+@media screen and (max-width: 635px){
+    main{
+        margin-top: 50px;
+    }
+
+    .main-heading{
+        font-size: 28px;
+        width: 80%;
+    }
+
+    main .main-desciption{
+        font-size: 10px;
+        width: 80%;
+    }
+
+    .shorten-form{
+        border-width: 1px;
+        border-radius: 15px;
+        margin: 10px auto;
+        padding: 3px; 
+        padding-left: 7px;
+        width: 80%;
+    }
+
+    .shorten-form div{
+        gap: 7px;
+    }
+
+    .shorten-form div i{
+        font-size: 10px;
+    }
+
+    .shorten-form div input{
+        font-size: 10px;
+        width: 100%;
+    }
+
+
+    .lg-add-btn{
+        display: none;
+    }
+
+    .shorten-form .sm-add-btn{
+        display: flex;
+        font-size: 10px;
+        border-radius: 50%;
+        padding: 8px;
+
+        & .fa-arrow-right{
+            color: white;
+        }
+    }
+
+}

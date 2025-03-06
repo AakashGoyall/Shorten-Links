@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style/shortlist.css">
+</head>
+
+<body>
+    <table class="lg-table">
+        <thead>
+            <tr>
+                <th class="field-1">Short Link</th>
+                <th class="field-2">Original Link</th>
+                <th class="field-3">Date <i class="fa-regular fa-calendar-days"></i></th>
+                <th class="field-4">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% data.forEach((curElem)=> { %>
+                <tr key="<%= curElem.id  %>" class="parentTR" data-shorten="<%= curElem.shortenUrl %>">
+                    <td class="short-link" data-url="<%= hostName %>/<%=curElem.shortenUrl %>">
+                        <a href="<%= curElem.shortenUrl %>" target="_blank" class="link">
+                            <% let shorten=hostName + "/" + curElem.shortenUrl %>
+                                <%= (shorten || "" ).length> 30 ? (shorten || "").slice(0, 30) + "..." : (shorten || "")
+                                    %>
+
+                        </a>
+                        <i class="fa-solid fa-copy icon" title="Copy"></i>
+                    </td>
+                    <td class="original-link">
+                        <img src="https://www.google.com/s2/favicons?domain=<%= curElem.siteName %>.com&sz=64"
+                            alt="<%= curElem.favicon %> Favicon" />
+
+                        <a href="<%= curElem.url %>" target="_blank">
+                            <%= (curElem.url || "" ).length> 50 ? (curElem.url || "").slice(0, 50) + "..." :
+                                (curElem.url || "") %>
+                        </a>
+                    </td>
+                    <td class="date">
+                        <%= moment(curElem.createdAt).format("MMM-DD-YYYY") %>
+                    </td>
+                    <td class="action"><i class="fa-solid fa-pencil icon" title="Edit"></i>
+                        <i class="fa-solid fa-trash icon" title="Delete"></i>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+
+    <table class="sm-table">
+        <thead>
+            <tr>
+                <th class="field-1">Shorten Links</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% data.forEach((curElem)=> { %>
+                <tr>
+                    <td class="short-link" data-url="<%= hostName %>/<%=curElem.shortenUrl %>">
+                        <div>
+                            <a href="<%= curElem.shortenUrl %>" target="_blank" class="link">
+                                <% let shorten=hostName + "/" + curElem.shortenUrl %>
+                                    <%= (shorten || "" ).length> 30 ? (shorten || "").slice(0, 30) + "..." : (shorten ||
+                                        "")
+                                        %>
+
+                            </a>
+                            <i class="fa-solid fa-copy icon" title="Copy"></i>
+                        </div>
+                        <i class="fa-solid fa-circle-chevron-down" title="Drop Down"></i>
+                    </td>
+                </tr>
+
+                <tr class="opened-drop" key="<%= curElem.id  %>" data-shorten="<%= curElem.shortenUrl %>">
+                    <td class="original-link">
+                        <img src="https://www.google.com/s2/favicons?domain=<%= curElem.siteName %>.com&sz=64"
+                            alt="<%= curElem.favicon %> Favicon" />
+
+                        <a href="<%= curElem.url %>" target="_blank">
+                            <%= (curElem.url || "" ).length> 49 ? (curElem.url || "").slice(0, 49) + "..." :
+                                (curElem.url || "") %>
+                        </a>
+                    </td>
+
+
+                    <td class="action">
+                        <i class="fa-solid fa-pencil icon" title="Edit"></i>
+                        <i class="fa-solid fa-trash icon" title="Delete"></i>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+
+    <%- include('update'); -%>
+
+        <script>
+            // delete data from database
+            const deleteData = async (event) => {
+                let trParent = event.target.closest("tr")
+                const key = trParent?.getAttribute("key")
+
+                try {
+                    const res = await fetch(`/delete/${key}`, {
+                        method: "DELETE"
+                    })
+                    const data = await res.json()
+                    if (res.ok) {
+                        alert(data.msg)
+                        return window.location.reload();
+                    }
+                    return alert(data.msg)
+                } catch (error) {
+                    console.error(error)
+                }
+
+            }
+
+            document.querySelectorAll(".fa-trash").forEach((btn) => {
+                btn.addEventListener("click", deleteData);
+            })
+
+            // copy text to clipboard
+            const copyToClipboard = async (event) => {
+                try {
+                    let copyText = event.target.closest(".short-link")?.getAttribute("data-url")
+                    if (!copyText) {
+                        console.warn("No URL found to copy.");
+                        return;
+                    }
+                    console.log(copyText)
+
+                    await navigator.clipboard.writeText(copyText);
+                } catch (err) {
+                    console.error("Failed to copy: ", err);
+                }
+            };
+
+            document.querySelectorAll(".fa-copy").forEach((btn) => {
+                btn.addEventListener("click", copyToClipboard);
+            })
+
+            // open edit page and give argument  
+            const openEditPage = (event) => {
+                const key = event.target.closest("tr").getAttribute("key")
+                updatePage.style.display = "block";
+                const oldName = event.target.closest("tr").getAttribute("data-shorten")
+                // document.documentElement.style.backgroundBackdrop = "filter(blur)"
+
+                sendData(key, oldName)
+            }
+
+            document.querySelectorAll(".fa-pencil").forEach((btn) => {
+                btn.addEventListener("click", openEditPage)
+            })
+
+            // open drop down for phone users.
+            function openDropDown(event) {
+                    const toggleDropDown = event.target.closest("tr").nextElementSibling;
+                    toggleDropDown.classList.toggle("visible")
+            }
+
+            document.querySelectorAll(".fa-circle-chevron-down").forEach((btn) => {
+                btn.addEventListener("click", openDropDown)
+            })
+
+        </script>
+</body>
+
+</html>

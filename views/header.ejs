@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <link rel="stylesheet" href="/style/header.css">
+
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <h1>Linkly</h1>
+        </div>
+
+        <div class="theme">
+            <button id="light">
+                <i class="fa-regular fa-sun"></i>
+                <span  class="lg-toggle-theme"> Light theme</span>
+            </button>
+            <button id="dark">
+                <i class="fa-regular fa-moon"></i>
+                <span  class="lg-toggle-theme">Dark theme</span>
+            </button>
+        </div>
+    </header>
+
+    <script>
+        const dark = document.getElementById("dark")
+        const body = document.documentElement;
+        const light = document.getElementById("light")
+
+        const valueDefault = localStorage.getItem("theme") || "light"
+
+        if (valueDefault === "light") {
+            light.classList.add("active")
+            body.classList.remove("dark")
+            dark.classList.remove("active")
+        } else if (valueDefault === "dark") {
+            body.classList.add("dark")
+            dark.classList.add("active")
+            light.classList.remove("active")
+        }
+
+        const toggleTheme = (event) => {
+            const toggleId = event.target.closest("button").getAttribute("id")
+            console.log(toggleId)
+
+            if (toggleId === "dark") {
+                body.classList.add("dark");
+                dark.classList.add("active")
+                light.classList.remove("active")
+                localStorage.setItem("theme", "dark")
+            } else if (toggleId === "light") {
+                body.classList.remove("dark")
+                dark.classList.remove("active")
+                light.classList.add("active")
+                localStorage.setItem("theme", "light")
+            }
+        }
+
+        document.querySelector(".theme").addEventListener("click", toggleTheme)
+    </script>
+</body>
+
+</html>

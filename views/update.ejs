@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>update shorten url</title>
+    <link rel="stylesheet" href="/style/update.css" />
+</head>
+
+<body>
+
+    <section class="update-page">
+        <div class="close">
+            <i class="fa-solid fa-xmark" onclick="closeWindow()"></i>
+        </div>
+        <h1>Update Shorten Value</h1>
+        <form class="update-form" method="POST">
+            <div>
+                <input type="text" value="" id="old-shorten-url" readonly />
+            </div>
+            <div>
+                <input type="text" id="update-shorten-url" placeholder="Shorten name" autocomplete="off"/>
+            </div>
+            <button type="submit">Change Shorten Link!</button>
+
+            <p class="message"></p>
+        </form>
+    </section>
+
+
+    <script>
+        let updatePage = document.querySelector(".update-page")
+        let message = document.querySelector(".message");
+
+
+        // auto focus when user click in any key
+        document.documentElement.addEventListener("keyup", () => {
+            document.querySelector("#update-shorten-url").focus();
+        })
+
+        // close window when user click on submit or cross-sign
+        function closeWindow() {
+            setTimeout(()=>{
+            updatePage.style.display = "none"
+            }, 1000)
+        }
+
+        // this function calls from shortList and add this add in input
+        function sendData (key, oldName){
+            document.getElementById("old-shorten-url").value = oldName;
+            updatePage.setAttribute("key", key);
+        }
+
+        // Update the shorten name
+        const updatePost = async (event) => {
+            event.preventDefault()
+            const newShortenValue = document.getElementById("update-shorten-url").value.trim();
+            const key = updatePage.getAttribute("key");
+
+            if (!newShortenValue) {
+        message.innerText = "Shortened URL cannot be empty.";
+        message.classList.add("error-message");
+        return;
+    }
+
+            try {
+                const res = await fetch(`/update/${key}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ shortenUrl: newShortenValue })
+                })
+                const data = await res.text()
+                console.log(res)
+
+                if (res.ok) {
+                    message.classList.remove("error-message");
+                    message.style.display = "block"
+                    message.innerText = data;
+                    return window.location.reload();
+                }
+                
+                message.innerText = data
+                message.classList.add("error-message")
+                return ''
+
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        document.querySelector(".update-form").addEventListener("submit", updatePost)
+    </script>
+</body>
+
+</html>
