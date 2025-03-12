@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorten URL: Login </title>
+    <link rel="stylesheet" href="/style/login.css" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+</head>
+
+<body>
+    <%- include('./partials/header'); -%>
+
+        <section class="login-page">
+                <p class="message"></p>
+
+                    <div class="col-1">
+                        <h1>Welcome Back</h1>
+                        <p>Glad to see you again! Log in to continue where you left off.</p>
+                    </div>
+
+                    <div class="col-2">
+                        <h1>Login</h1>
+                        <p>Log in to access your account.</p>
+
+                        <form method="POST" class="login-form">
+                            <div>
+                                <input type="email" autocomplete="off" required placeholder="Enter your email"
+                                    name="email" id="username">
+                            </div>
+
+                            <div>
+                                <input type="password" autocomplete="off" required placeholder="Enter your password"
+                                    name="password" id="password" />
+                                <i class="fa-regular fa-eye-slash" id="toggle-password-type"></i>
+                            </div>
+
+                            <button class="submit-button">LogIn</button>
+                        </form>
+
+                        <div class="forget">
+                            <a href="/forget">Forget Password?</a>
+                        </div>
+
+                        <div class="or-section">
+                            <span class="horizontal-line"></span>
+                            Or
+                            <span class="horizontal-line"></span>
+                        </div>
+
+                        <div class="open-by-social">
+                            <img src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png"
+                                alt="Google logo" />
+                            <img src="https://i.pinimg.com/originals/c1/45/7e/c1457ec61545d41c3398072daf3cbd53.png"
+                                alt="Facebook logo" />
+                            <img src="https://logos-world.net/wp-content/uploads/2020/04/Twitter-Logo.png"
+                                alt="Twitter Logo" />
+                        </div>
+
+                        <div class="signup-box">
+                            <p>Don't have an account? <a href="/signup">Signup</a></p>
+                            <div>
+                                <a href="/terms"><button>Terms & Conditions</button></a>
+                        <a href="/support"><button>Support</button></a>
+                        <a href="/customer-care"><button>Customer care</button></a>
+                            </div>
+                        </div>
+                    </div>
+        </section>
+
+        <script>
+            const message = document.querySelector(".message")
+            let passwordInput = document.getElementById("password");
+            const togglePasswordType = document.querySelector("#toggle-password-type")
+
+            const handleLoginForm = async (event) => {
+                event.preventDefault()
+
+                const form = new FormData(event.target)
+                const email = form.get("email")
+                const password = form.get("password")
+                console.log(email, password)
+
+                try {
+                    const res = await fetch("/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, password })
+                    })
+
+                    const data = await res.json();
+
+                    event.target.reset()
+                    if(res.ok){
+                        localStorage.setItem("token", data.token)
+                        window.location.href = data.redirectUrl
+                        return  ''
+                    }
+                    
+                    message.style.display = "flex"
+                    setTimeout(()=> {
+                        message.style.display = "none";
+                    }, 2000)
+                    message.classList.add("error-message")
+                    message.innerText = data.msg;
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
+            const handlePassword = () => {
+                if (passwordInput) {
+                    togglePasswordType.classList.toggle("fa-eye");
+                    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+                } else {
+                    console.error("passwordField element not found!");
+                }
+            };
+
+
+            passwordInput.addEventListener("input", () => {
+                if (passwordInput.value.length !== 0) {
+                    togglePasswordType.style.display = "inline"
+                } else {
+                    togglePasswordType.style.display = "none";
+                }
+            })
+
+
+            togglePasswordType.addEventListener("click", handlePassword);
+            document.querySelector(".login-form").addEventListener('submit', handleLoginForm)
+        </script>
+</body>
+
+</html>

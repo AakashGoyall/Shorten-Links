@@ -81,7 +81,13 @@
     }
 }
 
-.message{
+.update-message{
+    font-weight: 700;
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -o-border-radius: 2rem;
+    animation: message-anim .5s;
     display: none;
     background-color: #B6EACD;
     color: black;
@@ -90,12 +96,6 @@
     text-align: center;
     font-size: 1.2rem;
     border: 1px solid #199F5E;
-    font-weight: 700;
-    -webkit-border-radius: 2rem;
-    -moz-border-radius: 2rem;
-    -ms-border-radius: 2rem;
-    -o-border-radius: 2rem;
-    animation: message-anim .5s;
 }
 
 .error-message {

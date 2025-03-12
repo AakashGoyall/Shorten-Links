@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorten URL: SignUp </title>
+    <link rel="stylesheet" href="/style/signup.css" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+</head>
+
+<body>
+    <%- include('./partials/header'); -%>
+
+        <section class="signup-page">
+            <p class="message"></p>
+
+            <div class="signup">
+                <h1>Sign up</h1>
+                <p>Sign up and join us! 🚀</p>
+
+                <form method="POST" class="signup-form">
+                    <div>
+                        <input type="text" autocomplete="off" placeholder="Enter your username" name="username"
+                            id="username">
+                    </div>
+
+                    <div>
+                        <input type="email" autocomplete="off" required placeholder="Enter your email" name="email"
+                            id="email">
+                    </div>
+
+                    <div>
+                        <input type="number" autocomplete="off" required placeholder="Enter your phone" name="phone"
+                            id="phone" />
+                    </div>
+
+                    <div>
+                        <input type="password" autocomplete="off" required placeholder="Enter your password"
+                            name="password" id="password" />
+                        <i class="fa-regular fa-eye-slash" id="toggle-password-type"></i>
+                    </div>
+
+                    <button class="submit-button">Sign up</button>
+                </form>
+
+                <div class="or-section">
+                    <span class="horizontal-line"></span>
+                    Or
+                    <span class="horizontal-line"></span>
+                </div>
+
+                <div class="open-by-social">
+                    <img src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png" alt="Google logo" />
+                    <img src="https://i.pinimg.com/originals/c1/45/7e/c1457ec61545d41c3398072daf3cbd53.png"
+                        alt="Facebook logo" />
+                    <img src="https://logos-world.net/wp-content/uploads/2020/04/Twitter-Logo.png" alt="Twitter Logo" />
+                </div>
+
+                <div class="login-box">
+                    <p>I've already an account? <a href="/login">Login</a></p>
+                    <div>
+                        <a href="/terms"><button>Terms & Conditions</button></a>
+                        <a href=""><button>Support</button></a>
+                        <a href=""><button>Customer care</button></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="otp">
+
+                <div class="otp-section">
+                    <div class="close-section">
+                        <i class="fa-solid fa-xmark" id="close-otp"></i>
+                    </div>
+                    <div class="otp-first-section">
+                        <h1>OTP</h1>
+                        <p>Your code was sent to you're via email</p>
+                    </div>
+                    <form method="POST" id="formOTP">
+                        <div>
+                            <input type="number" name="otp-value" id="otp-value" />
+                        </div>
+                        <div>
+                            <button class="submit-button">Submit</button>
+                        </div>
+                    </form>
+                    <div class="resend-otp-section">
+                        Didn't receive OTP:
+                        <span class="resend-otp" style="cursor: pointer;">Resend OTP</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+
+        <script>
+            const message = document.querySelector(".message")
+            let passwordInput = document.getElementById("password");
+            const togglePasswordType = document.querySelector("#toggle-password-type")
+
+            // Enable OTP Page and check user is already exist or not
+            const handleSignupForm = async (event) => {
+                event.preventDefault()
+
+                const email = document.getElementById('email').value
+
+                try {
+                    const res = await fetch("/signup", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email })
+                    })
+
+                    const data = await res.json()
+                    setTimeout(() => {
+                        message.style.display = "none"
+                    }, 2000)
+                    message.innerText = data.msg;
+                    message.style.display = "flex";
+                    if (res.ok) {
+                        message.classList.remove("error-message")
+                        document.querySelector(".otp").style.display = "flex"
+                        return ''
+                    }
+                    message.classList.add("error-message")
+                    return ''
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
+            // Change type of input password to text or text to password
+            const handlePassword = () => {
+                if (passwordInput) {
+                    togglePasswordType.classList.toggle("fa-eye");
+                    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+                } else {
+                    console.error("passwordField element not found!");
+                }
+            };
+
+            // Verify OTP
+            const handleOTP = async (event) => {
+                event.preventDefault()
+
+                const username = document.getElementById('username').value
+                const email = document.getElementById('email').value
+                const password = document.getElementById('password').value
+                const phone = document.getElementById('phone').value
+                const verifiedOTP = document.getElementById('otp-value').value
+
+                try {
+                    const res = await fetch('/verifyOTP', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ username, password, email, verifiedOTP, phone })
+                    })
+
+                    const data = await res.json()
+
+                    message.innerText = data.msg
+                    message.style.display = 'flex'
+                    setTimeout(() => {
+                        message.style.display = "none"
+                    }, 2000)
+                    if (res.ok) {
+                        message.classList.remove("error-message")
+                        localStorage.setItem("token", data.token)
+                        window.location.href = data.redirectUrl
+                        return ''
+                    }
+                    message.classList.add("error-message")
+                    return ''
+                } catch (error) {
+                    console.error("OTP Error: ", error)
+                }
+            }
+
+            // Close OTP page
+            const closeOTP = () => {
+                document.querySelector('.otp').style.display = "none"
+            }
+
+            // Eye button enable until input length will min 1
+            passwordInput.addEventListener("input", () => {
+                if (passwordInput.value.length !== 0) {
+                    togglePasswordType.style.display = "inline"
+                } else {
+                    togglePasswordType.style.display = "none";
+                }
+            })
+
+            // All function Calling from here
+            togglePasswordType.addEventListener("click", handlePassword);
+            document.querySelector(".signup-form").addEventListener('submit', handleSignupForm)
+            document.querySelector('#close-otp').addEventListener('click', closeOTP)
+            document.getElementById("formOTP").addEventListener('submit', handleOTP)
+            document.querySelector('.resend-otp').addEventListener('click', handleSignupForm)
+        </script>
+</body>
+
+</html>

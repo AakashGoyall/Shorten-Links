@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/style/header.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <h1>Linkly</h1>
+        </div>
+
+        <nav>
+            <ul id="navbar-links">
+                <li class="nav-link"><a href="/">Home</a></li>
+                <li class="nav-link" id="contact-link" style="display: none;"><a href="/contact">Contact</a></li>
+                <li class="nav-link" id="login-link"><a href="/login">Log in</a></li>
+                <li class="nav-link" id="signup-link"><a href="/signup">Sign Up</a></li>
+                <li class="nav-link" id="logout-link" style="display: none;">
+                    <a href="/login" id="logout">Logout</a>
+                </li>
+            </ul>
+            <div class="theme">
+                <button id="light">
+                    <i class="fa-regular fa-sun"></i>
+                </button>
+                <button id="dark">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <script>
+        const dark = document.getElementById("dark");
+        const body = document.documentElement;
+        const light = document.getElementById("light");
+
+        // Set theme based on localStorage
+        const valueDefault = localStorage.getItem("theme") || "light";
+
+        if (valueDefault === "light") {
+            light.classList.add("active");
+            body.classList.remove("dark");
+            dark.classList.remove("active");
+        } else if (valueDefault === "dark") {
+            body.classList.add("dark");
+            dark.classList.add("active");
+            light.classList.remove("active");
+        }
+
+        const toggleTheme = (event) => {
+            const toggleId = event.target.closest("button").getAttribute("id");
+
+            body.classList.toggle("dark");
+            if (toggleId === "dark") {
+                dark.classList.add("active");
+                light.classList.remove("active");
+                localStorage.setItem("theme", "dark");
+            } else if (toggleId === "light") {
+                dark.classList.remove("active");
+                light.classList.add("active");
+                localStorage.setItem("theme", "light");
+            }
+        };
+
+        const removeJWT = () => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+        };
+
+        const sendToken = async () => {
+            const token = localStorage.getItem("token") || '';
+            console.log("Token:", token);
+
+            if (token) {
+                try {
+                    const res = await fetch("/userLoggedIn", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+
+                    if (res.ok) {
+                        document.getElementById("logout-link").style.display = "inline-block";
+                        document.getElementById("login-link").style.display = "none";
+                        document.getElementById("signup-link").style.display = "none";
+                        document.getElementById("contact-link").style.display = "inline-block";
+                    }
+                } catch (error) {
+                    console.log("Error:", error);
+                }
+            }
+        };
+
+        window.addEventListener("DOMContentLoaded", sendToken);
+        document.getElementById("logout").addEventListener("click", removeJWT);
+        document.querySelector(".theme").addEventListener("click", toggleTheme);
+    </script>
+</body>
+
+</html>

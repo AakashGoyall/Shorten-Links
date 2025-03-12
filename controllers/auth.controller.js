@@ -1,94 +1,134 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/userSchema");
-const crypto = require("crypto");
+const sendOTP = require("../utils/sendOTP");
 require("dotenv").config();
-const moment = require("moment");
-const os = require("os")
 
+let otpStore = {};
 
-const getPost = async (req, res) => {
-  const hostName = process.env.HOST_NAME || `${req.protocol}://${req.get("host")}`;
-  const data = await User.find();
-
-  return res.render("index", { data, hostName, moment });
+const signupPage = (req, res) => {
+  res.render("signup");
 };
 
-const addPost = async (req, res) => {
-  let { originalUrl } = req.body;
-
-  if (!originalUrl) {
-    return res.status(404).send("Unavailable url");
-  }
-
-  const hostNameURL = new URL(originalUrl).hostname.split(".");
-  const siteName = hostNameURL.length > 2 ? hostNameURL[1] : hostNameURL[0];
-
-  let shortenUrl = crypto.randomBytes(4).toString("hex");
-
-  const isExist = await User.findOne({ shortenUrl });
-
-  if (isExist) {
-    shortenUrl = crypto.randomBytes(4).toString("hex");
-  }
+const postSignup = async (req, res) => {
+  const { email } = req.body;
 
   try {
-    await User.create({ shortenUrl, url: originalUrl, siteName });
-    return res.status(200).send("Successfully Added the data");
+    const userExist = await User.findOne({ email });
+    if (userExist) {
+      return res.status(409).json({ msg: "This user is already exist!" });
+    }
+    const otp = await sendOTP(email);
+    otpStore[email] = {
+      originalOTP: otp,
+      otpExpiration: Date.now() + 1000 * 60 * 5,
+    };
+
+    console.log(otp);
+    res.status(200).json({ msg: "OTP sent successfully" });
   } catch (error) {
-    console.log("Post home error", error);
+    console.log("error of signup page", error);
+    res.status(500).json({ msg: "Server Error. Please try again later." });
   }
 };
 
-const updatePost = async (req, res) => {
-  const { id } = req.params;
-  const { shortenUrl } = req.body;
+const loginPage = (req, res) => {
+  res.render("login");
+};
 
-  const isExist = await User.findOne({shortenUrl})
-
-  if(isExist){
-    return res.status(404).send("Use another name because this is already exist")
-  }
+const postLogin = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    await User.updateOne(
-      { _id: id }, 
-      { $set: { shortenUrl: shortenUrl } }
+    const userExist = await User.findOne({ email });
+
+    if (!userExist) {
+      return res.status(400).send({ msg: "Invalid email or password!" });
+    }
+
+    const verifyPassword = await userExist.comparePassword(password);
+
+    if (!verifyPassword) {
+      return res.status(400).send({ msg: "Invalid email or password!" });
+    }
+
+    // generate JWT token
+    const token = jwt.sign(
+      { email, id: userExist._id },
+      process.env.JWTSECRETKEY,
+      {
+        expiresIn: "7d",
+      }
     );
-    return res.status(200).send("Updated successfully");
+
+    return res.status(200).send({ success: true, redirectUrl: "/", token });
   } catch (error) {
-    console.error("something error in update post");
+    console.error("Login Error:", error);
+    res.status(500).send({ msg: "Server Error. Please try again later." });
   }
 };
 
-const deletePost = async (req, res) => {
-  const { id } = req.params;
+const checkLogin = async (req, res) => {
+  const authToken = req.headers.authorization;
+
+  if (!authToken || !authToken.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Access Denied! No Token Provided" });
+  }
+
+  const token = authToken.split(" ")[1];
 
   try {
-    const deleted = await User.findByIdAndDelete(id);
+    const decodeToken = jwt.verify(token, process.env.JWTSECRETKEY);
 
-    if (!deleted) {
-      return res.status(404).json({ msg: "something error" });
+    if(!decodeToken){
+      return res.status(400).send({msg: "First you should Login"})
     }
-
-    return res.status(200).json({ msg: "Post successfully deleted" });
+    res.status(200).send({ msg: "User is logged in!", user: decodeToken });
   } catch (error) {
-    return res.status(500).json({ msg: "there is server error" });
+    console.log(error);
+    res.status(403).send({ error: "Invalid or Expired Token" });
   }
 };
 
-const redirectedPage = async (req, res) => {
-  const { shortenUrl } = req.params;
-  const data = await User.findOne({ shortenUrl });
+const verifyOTP = async (req, res) => {
+  const { verifiedOTP, email, phone, password, username } = req.body;
 
+  if (!verifiedOTP) {
+    return res.status(400).send({ msg: "Please enter the OTP" });
+  }
+
+  if (verifiedOTP != otpStore[email].originalOTP) {
+    return res.status(400).send({ msg: "OTP is incorrect" });
+  }
+
+  if (otpStore[email].otpExpiration < Date.now()) {
+    console.log("expire: ", otpStore[email].otpExpiration, "Right Now: ", Date.now() )
+    delete otpStore;
+    return res.status(400).send({ msg: "OTP has been expired" });
+  }
   try {
-    if (data) {
-      return res.status(300).redirect(data.url);
-    }
 
-    return res.status(404).render("error");
+    const userData = await User.create({ username, email, phone, password });
+    const token = jwt.sign(
+      { email, id: userData._id },
+      process.env.JWTSECRETKEY,
+      { expiresIn: "10d" }
+    );
+
+    res
+    .status(201)
+    .send({ msg: "Successfully user created", redirectUrl: "/", token });
+    delete otpStore;
+
   } catch (error) {
-    console.log("this is server error", error);
-    return res.statuss(500).send("server error");
+    console.error("Verified OTP: ", error);
   }
 };
 
-module.exports = { getPost, addPost, redirectedPage, deletePost, updatePost };
+module.exports = {
+  signupPage,
+  postSignup,
+  checkLogin,
+  loginPage,
+  postLogin,
+  verifyOTP,
+};

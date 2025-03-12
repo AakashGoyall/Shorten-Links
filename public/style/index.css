@@ -1,5 +1,6 @@
 main{
-    margin-top: 10rem;
+    padding-top: 10rem;
+    position: relative;
 }
 
 .main-heading{

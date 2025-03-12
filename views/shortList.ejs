@@ -19,34 +19,41 @@
             </tr>
         </thead>
         <tbody>
-            <% data.forEach((curElem)=> { %>
-                <tr key="<%= curElem.id  %>" class="parentTR" data-shorten="<%= curElem.shortenUrl %>">
-                    <td class="short-link" data-url="<%= hostName %>/<%=curElem.shortenUrl %>">
-                        <a href="<%= curElem.shortenUrl %>" target="_blank" class="link">
-                            <% let shorten=hostName + "/" + curElem.shortenUrl %>
-                                <%= (shorten || "" ).length> 30 ? (shorten || "").slice(0, 30) + "..." : (shorten || "")
-                                    %>
+            <% if(data &&  data.length > 0) { %>
+                <% data.forEach((curElem)=> { %>
+                    <tr key="<%= curElem.id  %>" class="parentTR" data-shorten="<%= curElem.shortenUrl %>">
+                        <td class="short-link" data-url="<%= hostName %>/<%=curElem.shortenUrl %>">
+                            <a href="<%= curElem.shortenUrl %>" target="_blank" class="link">
+                                <% let shorten=hostName + "/" + curElem.shortenUrl %>
+                                    <%= (shorten || "" ).length> 30 ? (shorten || "").slice(0, 30) + "..." : (shorten ||
+                                        "")
+                                        %>
 
-                        </a>
-                        <i class="fa-solid fa-copy icon" title="Copy"></i>
-                    </td>
-                    <td class="original-link">
-                        <img src="https://www.google.com/s2/favicons?domain=<%= curElem.siteName %>.com&sz=64"
-                            alt="<%= curElem.favicon %> Favicon" />
+                            </a>
+                            <i class="fa-solid fa-copy icon" title="Copy"></i>
+                        </td>
+                        <td class="original-link">
+                            <img src="https://www.google.com/s2/favicons?domain=<%= curElem.siteName %>.com&sz=64"
+                                alt="<%= curElem.favicon %> Favicon" loading="lazy" />
 
-                        <a href="<%= curElem.url %>" target="_blank">
-                            <%= (curElem.url || "" ).length> 50 ? (curElem.url || "").slice(0, 50) + "..." :
-                                (curElem.url || "") %>
-                        </a>
-                    </td>
-                    <td class="date">
-                        <%= moment(curElem.createdAt).format("MMM-DD-YYYY") %>
-                    </td>
-                    <td class="action"><i class="fa-solid fa-pencil icon" title="Edit"></i>
-                        <i class="fa-solid fa-trash icon" title="Delete"></i>
-                    </td>
-                </tr>
-                <% }) %>
+                            <a href="<%= curElem.url %>" target="_blank">
+                                <%= (curElem.url || "" ).length> 50 ? (curElem.url || "").slice(0, 50) + "..." :
+                                    (curElem.url || "") %>
+                            </a>
+                        </td>
+                        <td class="date">
+                            <%= moment(curElem.createdAt).format("MMM-DD-YYYY") %>
+                        </td>
+                        <td class="action"><i class="fa-solid fa-pencil icon" title="Edit"></i>
+                            <i class="fa-solid fa-trash icon" title="Delete"></i>
+                        </td>
+                    </tr>
+                    <% }) %>
+                    <% } else{ %>
+                        <tr colspan="4">
+                            <td> You didn't add Data </td>
+                        </tr>
+                        <% } %> 
         </tbody>
     </table>
 
@@ -57,6 +64,7 @@
             </tr>
         </thead>
         <tbody>
+            <% if(data &&  data.length > 0) { %>
             <% data.forEach((curElem)=> { %>
                 <tr>
                     <td class="short-link" data-url="<%= hostName %>/<%=curElem.shortenUrl %>">
@@ -77,7 +85,7 @@
                 <tr class="opened-drop" key="<%= curElem.id  %>" data-shorten="<%= curElem.shortenUrl %>">
                     <td class="original-link">
                         <img src="https://www.google.com/s2/favicons?domain=<%= curElem.siteName %>.com&sz=64"
-                            alt="<%= curElem.favicon %> Favicon" />
+                            alt="<%= curElem.favicon %> Favicon" loading="lazy" />
 
                         <a href="<%= curElem.url %>" target="_blank">
                             <%= (curElem.url || "" ).length> 49 ? (curElem.url || "").slice(0, 49) + "..." :
@@ -92,81 +100,104 @@
                     </td>
                 </tr>
                 <% }) %>
+                <% } else{ %>
+                    <tr colspan="4">
+                        <td> You didn't add Data </td>
+                    </tr>
+                    <% } %> 
         </tbody>
     </table>
 
     <%- include('update'); -%>
 
         <script>
-            // delete data from database
-            const deleteData = async (event) => {
-                let trParent = event.target.closest("tr")
-                const key = trParent?.getAttribute("key")
 
-                try {
-                    const res = await fetch(`/delete/${key}`, {
-                        method: "DELETE"
-                    })
-                    const data = await res.json()
-                    if (res.ok) {
-                        alert(data.msg)
-                        return window.location.reload();
-                    }
-                    return alert(data.msg)
-                } catch (error) {
-                    console.error(error)
-                }
+document.addEventListener("click", async (event) => {
+    // Delete functionality
+    if (event.target.classList.contains("fa-trash")) {
+        let trParent = event.target.closest("tr");
+        const key = trParent?.getAttribute("key");
 
+        if (!key) return;
+
+        try {
+            const res = await fetch(`/${key}`, { method: "DELETE" });
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.msg);
+                return verifyUserLinks(); // Update only the table instead of full reload
             }
+            alert(data.msg);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-            document.querySelectorAll(".fa-trash").forEach((btn) => {
-                btn.addEventListener("click", deleteData);
-            })
+    // Copy to clipboard functionality
+    if (event.target.classList.contains("fa-copy")) {
+        try {
+            let copyText = event.target.closest(".short-link")?.getAttribute("data-url");
+            if (!copyText) return console.warn("No URL found to copy.");
+            
+            console.log(copyText);
+            await navigator.clipboard.writeText(copyText);
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        }
+    }
 
-            // copy text to clipboard
-            const copyToClipboard = async (event) => {
-                try {
-                    let copyText = event.target.closest(".short-link")?.getAttribute("data-url")
-                    if (!copyText) {
-                        console.warn("No URL found to copy.");
-                        return;
-                    }
-                    console.log(copyText)
+    // Edit functionality
+    if (event.target.classList.contains("fa-pencil")) {
+        const key = event.target.closest("tr").getAttribute("key");
+        if (!key) return;
 
-                    await navigator.clipboard.writeText(copyText);
-                } catch (err) {
-                    console.error("Failed to copy: ", err);
-                }
-            };
+        updatePage.style.display = "block";
+        const oldName = event.target.closest("tr").getAttribute("data-shorten");
+        
+        sendData(key, oldName);
+    }
 
-            document.querySelectorAll(".fa-copy").forEach((btn) => {
-                btn.addEventListener("click", copyToClipboard);
-            })
+    // Open drop-down for mobile users
+    if (event.target.classList.contains("fa-circle-chevron-down")) {
+        const toggleDropDown = event.target.closest("tr").nextElementSibling;
+        toggleDropDown.classList.toggle("visible");
+    }
+});
 
-            // open edit page and give argument  
-            const openEditPage = (event) => {
-                const key = event.target.closest("tr").getAttribute("key")
-                updatePage.style.display = "block";
-                const oldName = event.target.closest("tr").getAttribute("data-shorten")
-                // document.documentElement.style.backgroundBackdrop = "filter(blur)"
 
-                sendData(key, oldName)
+            const verifyUserLinks = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) return;
+
+    try {
+        const res = await fetch('/', {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
             }
+        });
 
-            document.querySelectorAll(".fa-pencil").forEach((btn) => {
-                btn.addEventListener("click", openEditPage)
-            })
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(await res.text(), "text/html");
 
-            // open drop down for phone users.
-            function openDropDown(event) {
-                    const toggleDropDown = event.target.closest("tr").nextElementSibling;
-                    toggleDropDown.classList.toggle("visible")
-            }
+        // Extract the updated table content
+        const newLgTable = htmlDoc.querySelector(".lg-table");
+        const newSmTable = htmlDoc.querySelector(".sm-table");
 
-            document.querySelectorAll(".fa-circle-chevron-down").forEach((btn) => {
-                btn.addEventListener("click", openDropDown)
-            })
+        // Replace only the tables
+        document.querySelector(".lg-table").innerHTML = newLgTable.innerHTML;
+        document.querySelector(".sm-table").innerHTML = newSmTable.innerHTML;
 
+    } catch (error) {
+        console.log("Error fetching user data:", error);
+    }
+};
+
+window.addEventListener('DOMContentLoaded', verifyUserLinks);
+
+
+     
         </script>
 </body>
 

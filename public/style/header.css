@@ -12,6 +12,27 @@ header {
     font-weight: bold;
 }
 
+nav{
+    display: flex;
+    gap: 1rem;
+}
+
+nav ul{
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-link{
+    font-size: 1.7rem;
+    font-weight: 400;
+}
+
+.active-navlink{
+    color: var(--primary-blue-color);
+}
+
 .theme {
     border: 1px solid var(--primary-lite-color);
     border-radius: 2.5rem;
@@ -32,9 +53,6 @@ header {
     -ms-border-radius: 2rem;
     -o-border-radius: 2rem;
 
-    /* & span{
-        color: white;
-    } */
 }
 
 .theme button i {
@@ -42,19 +60,11 @@ header {
 }
 
 
-.sm-toggle-theme{
-    display: none;
-}
-
 .active {
     background-color: var(--primary-blue-color);
     font-weight: bold;
 
     & i{
-        color: white;
-    }
-
-    & span{
         color: white;
     }
 }
@@ -69,6 +79,13 @@ header {
         font-size: 24px;
     }
 
+    nav{
+        gap: 10px;
+    }
+
+    .nav-link{
+        font-size: 10px;
+    }
 
     .theme{
         border-radius: 20px;
@@ -86,12 +103,9 @@ header {
 }
 }
 
-    .lg-toggle-theme{
-        display: none;
-    }
-
     .theme button i{
             font-size: 10px;
             padding: 5px;
     }
 }
+

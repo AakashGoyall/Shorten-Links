@@ -24,14 +24,14 @@
             </div>
             <button type="submit">Change Shorten Link!</button>
 
-            <p class="message"></p>
+            <p class="update-message"></p>
         </form>
     </section>
 
 
     <script>
         let updatePage = document.querySelector(".update-page")
-        let message = document.querySelector(".message");
+        let message = document.querySelector(".update-message");
 
 
         // auto focus when user click in any key
@@ -59,13 +59,13 @@
             const key = updatePage.getAttribute("key");
 
             if (!newShortenValue) {
-        message.innerText = "Shortened URL cannot be empty.";
-        message.classList.add("error-message");
+             message.innerText = "Shortened URL cannot be empty.";
+             message.classList.add("error-message");
         return;
     }
 
             try {
-                const res = await fetch(`/update/${key}`, {
+                const res = await fetch(`/${key}`, {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"

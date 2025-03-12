@@ -7,27 +7,24 @@
     <title>Shorten URL</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
     <link rel="stylesheet" href="/style/index.css" />
-    <link rel="stylesheet" href="/style/style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
-    <%- include('header'); -%>
+    <%- include('./partials/header'); -%>
 
         <main>
             <section class="container">
+                <p class="message"> </p>
                 <h1 class="main-heading">Shorten Your Loooong Links :)</h1>
                 <p class="main-desciption">Linkly is an efficient and easy-to-use URL shortening service that
                     streamlines your online
                     experience.</p>
 
-                <form class="shorten-form" method="POST" action = "/">
+                <form class="shorten-form" method="POST" action="/">
                     <div>
-                    <i class="fa-solid fa-link"></i>
-                    <input type="url" name="originalUrl" id="original-url" autocomplete="off"
-                        placeholder="Enter the link here" required />
+                        <i class="fa-solid fa-link"></i>
+                        <input type="url" name="originalUrl" id="original-url" autocomplete="off"
+                            placeholder="Enter the link here" required />
                     </div>
                     <button class="lg-add-btn">Shorten</button>
                     <button class="sm-add-btn"><i class="fa-solid fa-arrow-right"></i></button>
@@ -45,32 +42,43 @@
     const postData = async (e) => {
         e.preventDefault();
         let originalUrl = document.getElementById("original-url").value;
+        const token = localStorage.getItem("token")
 
         try {
-            const res = await fetch("/submit", {
+            const message = document.querySelector(".message")
+            const res = await fetch("/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({ originalUrl })
             })
 
             const data = await res.text();
 
+            e.target.reset();
+            message.innerText = data;
+            message.style.display = "flex";
+            setTimeout(()=> {
+                message.style.display = "none"
+            }, 2000)
             if (res.ok) {
-                alert(data);
-                e.target.reset();
+                message.classList.remove("error-message")
                 window.location.reload();
+            }else{
+                message.classList.add("error-message")
+                localStorage.removeItem("token")
             }
-
         } catch (error) {
             console.log("Data send problem", error)
         }
-
     }
 
+ 
+   
     document.querySelector(".shorten-form").addEventListener('submit', postData)
-
+    
 </script>
 
 </html>

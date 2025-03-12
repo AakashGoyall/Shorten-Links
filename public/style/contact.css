@@ -1,0 +1,131 @@
+.contact-page {
+    display: flex;
+    height: 100%;
+    position: relative;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+    margin: 10rem 1rem;
+    margin-top: 10dvh;
+}
+
+.contact-page .col-1 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.contact-page .col-1 h1 {
+    font-size: 4rem;
+}
+
+.contact-page .col-1 p {
+    font-size: 1.5rem;
+}
+
+.contact-page .col-2 {
+    border: 1px solid var(--primary-lite-color);
+    padding: 5rem 2rem;
+    width: 35%;
+    border-radius: 1.5rem;
+}
+
+.contact-page .col-2 h1 {
+    font-size: 2.5rem;
+}
+
+.contact-page .col-2 p {
+    font-size: 1.3rem;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.contact-form div {
+    padding: 1rem;
+    border: 1px solid var(--primary-lite-color);
+    border-radius: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    font-size: 1.2rem;
+}
+
+.contact-form button {
+    background: linear-gradient(to left, var(--primary-blue-color), var(--primary-pink-color));
+    color: white;
+    border-radius: 1rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.contact-form button:hover {
+    box-shadow: 0 0 1rem var(--primary-blue-color);
+}
+
+.contact-form button:active {
+    opacity: .7;
+}
+
+@media screen and (max-width: 635px) {
+
+    .contact-page .col-1 {
+        align-items: center;
+        text-align: center;
+
+        & h1 {
+            font-size: 30px;
+        }
+
+        & p {
+            font-size: 10px;
+            width: 90%;
+            text-align: center;
+        }
+    }
+
+    .contact-page .col-2 {
+        width: 70%;
+
+        &>h1 {
+            font-size: 20px;
+        }
+
+        &>p {
+            font-size: 10px;
+            width: 90%;
+
+        }
+    }
+
+    .contact-form input, .contact-form textarea {
+        font-size: 10px;
+    }
+
+    .contact-form button {
+        font-size: 10px;
+    }
+
+    .contact-page {
+        flex-direction: column;
+        align-items: center;
+    }
+
+}
+
+@media screen and (max-width: 430px) {
+    .contact-page .col-2 {
+        width: 90%;
+    }
+}

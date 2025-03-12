@@ -16,7 +16,8 @@ body {
     height: 100%;
     width: 100%;
     background-color: var(--primary-black-color);
-    padding: 2rem 3rem;    
+
+    padding: 2rem 3rem;
 }
 
 :root {
@@ -25,7 +26,7 @@ body {
     --primary-blue-color: #144EE3;
     --secondary-grey-color: #D0D5DD;
     --primary-grey-color: #ececec;
-    --primary-drop-down-color:#ffffffa3;
+    --primary-drop-down-color: #ffffffa3;
     --primary-lite-color: #888888;
     --primary-text-color: #222222;
 }
@@ -38,7 +39,7 @@ body {
         --primary-grey-color: #191e278e;
         --secondary-grey-color: #181E29;
         --primary-lite-color: #C9CED6;
-        --primary-drop-down-color:#252a34;
+        --primary-drop-down-color: #252a34;
         --primary-text-color: #ffffff;
     }
 }
@@ -46,7 +47,7 @@ body {
 .dark {
     --primary-black-color: #0B101B;
     --primary-pink-color: #EB568E;
-    --primary-drop-down-color:#252a34;
+    --primary-drop-down-color: #252a34;
     --primary-blue-color: #144EE3;
     --primary-grey-color: #191e278e;
     --secondary-grey-color: #181E29;
@@ -54,6 +55,17 @@ body {
     --primary-text-color: #ffffff;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
 
 ::-webkit-scrollbar {
     width: 1px;
@@ -64,11 +76,11 @@ body {
 }
 
 ::placeholder {
-    color: var(--primary-text-color);
+    /* color: rgb(199, 199, 199); */
     font-size: 1.3rem;
 }
 
-input {
+input, textarea {
     outline: none;
     border: none;
     background: transparent;
@@ -103,89 +115,148 @@ button {
     margin: 0 auto;
 }
 
+.message {
+    font-weight: 700;
+    display: none;
+    background-color: #B6EACD;
+    color: black;
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+    border: 1px solid #199F5E;
+    position: absolute;
+    right: 5%;
+    z-index: 100;
+    border-radius: 1rem;
+    top: 3%;
+    animation: message 1s;
+    -webkit-animation: message 1s;
+}
 
-@media screen and (max-width: 1049px){
-    html{
+.error-message {
+    background-color: #FEE3E1;
+    color: #FB3D33;
+    border: 1px solid #FB3D33;
+}
+
+.submit-button {
+    background: linear-gradient(to left, var(--primary-blue-color), var(--primary-pink-color));
+    color: white;
+    border-radius: 1rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+    padding: 1rem;
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -o-border-radius: 1rem;
+
+    &:hover {
+        box-shadow: 0 0 1rem var(--primary-blue-color);
+    }
+
+    &:active {
+        opacity: .7;
+    }
+}
+
+@keyframes message {
+    0% {
+        opacity: 0;
+        right: 0;
+    }
+
+    100% {
+        opacity: 1;
+        right: 5%;
+    }
+}
+
+
+@media screen and (max-width: 1049px) {
+    html {
         font-size: 8px;
     }
 }
 
-@media screen and (max-width: 849px){
-    html{
+@media screen and (max-width: 849px) {
+    html {
         font-size: 7px;
     }
 }
 
-@media screen and (max-width: 749px){
-    html{
+@media screen and (max-width: 749px) {
+    html {
         font-size: 6px;
     }
 
-    .shorten-form{
+    .shorten-form {
         border-width: 1.5px;
     }
 
-    thead tr{
-        grid-template-columns: 3.5fr 5fr  .7fr !important;
-    }
-
-    tbody tr{
+    thead tr {
         grid-template-columns: 3.5fr 5fr .7fr !important;
     }
 
-    thead tr .field-3{
+    tbody tr {
+        grid-template-columns: 3.5fr 5fr .7fr !important;
+    }
+
+    thead tr .field-3 {
         display: none;
     }
 
-   tbody tr .date{
-    display: none;
-   } 
+    tbody tr .date {
+        display: none;
+    }
 }
 
-@media screen and (max-width: 635px){
-    html{
+@media screen and (max-width: 635px) {
+    html {
         font-size: 6px;
     }
 
-    button{
+    button {
         font-size: 10px;
     }
 
 
-    .icon{
+    .icon {
         font-size: 10px;
 
     }
-    
-    ::placeholder{
+
+    ::placeholder {
         font-size: 10px;
     }
 
-    
+
 
 }
 
-@media screen and (max-width: 580px){
-    html{
+@media screen and (max-width: 580px) {
+    html {
         font-size: 5px;
     }
-    .icon{
+
+    .icon {
         padding: 3px;
     }
 }
 
-@media screen and (max-width: 499px){
-    html{
-        font-size: 4px; 
+@media screen and (max-width: 499px) {
+    html {
+        font-size: 4px;
     }
 
-    .main-desciption{
+    .main-desciption {
         font-size: 1.3rem;
     }
 }
 
-@media screen and (max-width: 409px){
-    html{
+@media screen and (max-width: 409px) {
+    html {
         font-size: 3px;
     }
 }
