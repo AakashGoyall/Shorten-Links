@@ -18,8 +18,9 @@
             <h1>Linkly</h1>
         </div>
 
+        <i class="fa-solid fa-bars" id="ham-burger"></i>
         <nav>
-            <ul id="navbar-links">
+            <ul class="navbar-links">
                 <li class="nav-link"><a href="/">Home</a></li>
                 <li class="nav-link" id="contact-link" style="display: none;"><a href="/contact">Contact</a></li>
                 <li class="nav-link" id="login-link"><a href="/login">Log in</a></li>
@@ -59,14 +60,17 @@
 
         const toggleTheme = (event) => {
             const toggleId = event.target.closest("button").getAttribute("id");
+            console.log(toggleId)
 
-            body.classList.toggle("dark");
+            // body.classList.toggle("dark");
             if (toggleId === "dark") {
                 dark.classList.add("active");
+                body.classList.add("dark")
                 light.classList.remove("active");
                 localStorage.setItem("theme", "dark");
             } else if (toggleId === "light") {
                 dark.classList.remove("active");
+                body.classList.remove("dark")
                 light.classList.add("active");
                 localStorage.setItem("theme", "light");
             }
@@ -90,6 +94,10 @@
                         }
                     });
 
+                    const data = await res.json()
+
+                    console.log(data)
+
                     if (res.ok) {
                         document.getElementById("logout-link").style.display = "inline-block";
                         document.getElementById("login-link").style.display = "none";
@@ -102,9 +110,16 @@
             }
         };
 
+        const humBurger = () => {
+            document.querySelector("#ham-burger").classList.toggle("fa-xmark")
+            document.querySelector("nav").classList.toggle('toggle-navbar')
+        }
+
+        document.querySelector("#ham-burger").addEventListener("click", humBurger)
+        
+        document.querySelector(".theme").addEventListener("click", toggleTheme);
         window.addEventListener("DOMContentLoaded", sendToken);
         document.getElementById("logout").addEventListener("click", removeJWT);
-        document.querySelector(".theme").addEventListener("click", toggleTheme);
     </script>
 </body>
 

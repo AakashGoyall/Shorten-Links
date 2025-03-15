@@ -118,7 +118,23 @@
 }
 
 @media screen and (max-width: 635px){
+    .update-page{
+        width: 70%;
+    }
+
+    .update-page h1{
+        font-size: 13px;
+    }
+
+    .update-form button{
+        font-size: 10px;
+    }
+
     .update-form div input{
+        font-size: 10px;
+    }
+
+    .update-message{
         font-size: 10px;
     }
 }

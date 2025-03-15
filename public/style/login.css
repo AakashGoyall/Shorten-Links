@@ -177,6 +177,10 @@
         }
     }
 
+    .login-form>div i{
+        font-size: 10px;
+    }
+
     .login-form input{
         font-size: 10px;
     }

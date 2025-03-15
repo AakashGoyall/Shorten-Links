@@ -27,7 +27,7 @@ const postSignup = async (req, res) => {
     res.status(200).json({ msg: "OTP sent successfully" });
   } catch (error) {
     console.log("error of signup page", error);
-    res.status(500).json({ msg: "Server Error. Please try again later." });
+    res.status(500).json({ msg: "Server error! try again later" });
   }
 };
 
@@ -124,11 +124,30 @@ const verifyOTP = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  const {email} = req.body;
+
+  try{
+    const userData = await User.findOne({email})
+  
+    if(!userData){
+      return res.status(400).json({msg: "Email is not exist"});
+    }
+  
+    res.status(200).send({msg: "OTP sent successfully"})
+  }catch(error){
+    console.error(error)
+    res.status(500).send({msg: "Server Error! Try again later"})
+  }
+
+}
+
 module.exports = {
   signupPage,
   postSignup,
   checkLogin,
   loginPage,
+  updatePassword,
   postLogin,
   verifyOTP,
 };

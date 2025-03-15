@@ -2,6 +2,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
 .logo h1 {
@@ -12,24 +13,41 @@ header {
     font-weight: bold;
 }
 
-nav{
+#ham-burger {
+    display: none;
+    cursor: pointer;
+    font-size: 20px;
+
+    &:hover {
+        opacity: .7;
+    }
+
+    &:active {
+        opacity: 0;
+    }
+}
+
+nav {
     display: flex;
     gap: 1rem;
 }
 
-nav ul{
+nav ul {
+
     display: flex;
     gap: 2rem;
     justify-content: center;
     align-items: center;
 }
 
-.nav-link{
+
+
+.nav-link {
     font-size: 1.7rem;
     font-weight: 400;
 }
 
-.active-navlink{
+.active-navlink {
     color: var(--primary-blue-color);
 }
 
@@ -64,48 +82,75 @@ nav ul{
     background-color: var(--primary-blue-color);
     font-weight: bold;
 
-    & i{
+    & i {
         color: white;
     }
 }
 
 
-@media screen and (max-width: 635px){
-    header{
+@media screen and (max-width: 635px) {
+    header {
+        
         padding: 10px 5px;
     }
 
-    .logo h1{
+    #ham-burger {
+        display: flex;
+    }
+
+    nav {
+        display: none;
+    }
+
+    .logo h1 {
         font-size: 24px;
     }
 
-    nav{
+    nav {
         gap: 10px;
     }
 
-    .nav-link{
-        font-size: 10px;
+
+    .toggle-navbar {
+        background-color: var(--primary-grey-color);
+        padding: 2rem 3rem;
+        z-index: 99;
+        width: 50%;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 100%;
+        right: 0;
+
+        & ul {
+            flex-direction: column;
+        }
     }
 
-    .theme{
+    .nav-link {
+        font-size: 10px;
+        padding: 1rem;        
+    }
+
+    .theme {
+        margin: auto;
         border-radius: 20px;
         -webkit-border-radius: 20px;
         -moz-border-radius: 20px;
         -ms-border-radius: 20px;
         -o-border-radius: 20px;
 
-        & button{
+        & button {
             border-radius: 50%;
             -webkit-border-radius: 50%;
             -moz-border-radius: 50%;
             -ms-border-radius: 50%;
             -o-border-radius: 50%;
-}
-}
+        }
+    }
 
-    .theme button i{
-            font-size: 10px;
-            padding: 5px;
+    .theme button i {
+        font-size: 10px;
+        padding: 5px;
     }
 }
-
