@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorten URL: Forget</title>
+    <link rel="stylesheet" href="/style/forget.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png" />
+</head>
+
+<body>
+    <%- include('./partials/header'); -%>
+
+        <section class="forget-page">
+            <p class="message"></p>
+            <fieldset>
+                <h1>Find Your Account</h1>
+                <form method="POST" class="forgetForm">
+                    <div class="input-field">
+                        <p>Please enter your email address to search for your account.</p>
+                        <input type="email" id="email" autocomplete="off" required
+                            placeholder="Enter Your Email Address" name="email" />
+                    </div>
+                    <div class="buttons-field">
+                        <a href="/login" class="cancel-button">Cancel</a>
+                        <button type="submit" class="submit-button">Search</button>
+                    </div>
+                </form>
+            </fieldset>
+
+            <div class="otp">
+                <div class="otp-section">
+                    <div class="close-section">
+                        <i class="fa-solid fa-xmark" id="close-otp"></i>
+                    </div>
+                    <div class="otp-first-section">
+                        <h1>OTP</h1>
+                        <p>Your code was sent to you're via email</p>
+                    </div>
+                    <form method="POST" id="formOTP">
+                        <div>
+                            <input type="number" name="otp-value" id="otp-value" />
+                        </div>
+                        <div>
+                            <button class="submit-button">Submit</button>
+                        </div>
+                    </form>
+                    <div class="resend-otp-section">
+                        Didn't receive OTP:
+                        <span class="resend-otp" style="cursor: pointer;">Resend OTP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="password">
+                <div class="password-section">
+                    <div class="password-first-section">
+                        <h1>Enter new password</h1>
+                    </div>
+
+                    <form method="PATCH" id="form-password">
+                        <div>
+                            <input type="text" autocomplete="off" required placeholder="Enter your new password"
+                                name="password" id="new-password" />
+                        </div>
+
+                        <div>
+                            <button class="submit-button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <script>
+            const message = document.querySelector('.message')
+
+            const forgetFormHandle = async (event) => {
+                event.preventDefault();
+
+                const email = document.getElementById('email').value
+
+                try {
+                    const res = await fetch('/forget', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email })
+                    })
+
+                    const data = await res.json();
+
+                    message.innerText = data.msg;
+                    message.style.display = "flex"
+                    setTimeout(() => {
+                        message.style.display = "none"
+                    }, 1500)
+                    if (res.ok) {
+                        message.classList.remove('error-message')
+                        document.querySelector(".otp").style.display = "flex"
+                        return ''
+                    }
+                    message.classList.add('error-message')
+                } catch (error) {
+                    console.error("Forget error:", error)
+                }
+            }
+
+            const handleForgetOTP = async (event) => {
+                event.preventDefault()
+
+                const verifiedOTP = document.getElementById('otp-value').value
+                const email = document.getElementById('email').value
+
+                try {
+                    const res = await fetch('/forgetOTP', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ verifiedOTP, email })
+                    })
+
+                    const data = await res.json()
+                    message.innerText = data.msg
+                    message.style.display = 'flex'
+                    setTimeout(() => {
+                        message.style.display = "none"
+                    }, 2000)
+                    if (res.ok) {
+                        message.classList.remove("error-message");
+                        document.querySelector('.otp').style.display = "none";
+                        document.querySelector('.password').style.display = 'flex'
+                        return ''
+                    }
+                    message.classList.add("error-message")
+                    return ''
+                } catch (error) {
+                    console.error("OTP Error: ", error)
+                }
+            }
+
+            // updatePassword
+            const updatePassword = async(event) => {
+                event.preventDefault();
+
+                const newPassword = document.getElementById('new-password').value
+                const email = document.getElementById('email').value
+                try{
+                    const res = await fetch('/forget', {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({newPassword, email})
+                    })
+                    const data = await res.json();
+
+                    message.innerText = data.msg;
+                    message.style.display = 'flex'
+                    setTimeout(()=> {
+                        message.style.display = "none"
+                    }, 1500)
+                    if(res.ok){
+                        message.classList.remove('error-message')
+                        setTimeout(()=> {
+                            window.location.href = "/login"
+                        }, 1000)
+                        return ''
+                    }
+                    message.classList.add('error-message')
+                }catch(error){
+                    console.error(error)
+                }
+            }
+
+            
+            // Close OTP page
+            const closeOTP = () => {
+                document.querySelector('.otp').style.display = "none"
+            }
+
+
+            document.querySelector('#close-otp').addEventListener('click', closeOTP)
+            document.getElementById("formOTP").addEventListener('submit', handleForgetOTP)
+            document.getElementById('form-password').addEventListener('submit', updatePassword)
+            document.querySelector(".forgetForm").addEventListener('submit', forgetFormHandle)
+        </script>
+</body>
+
+</html>

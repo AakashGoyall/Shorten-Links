@@ -1,21 +1,25 @@
 const express = require("express");
 const {
   signupPage,
-  updatePassword,
+  checkUser,
   postSignup,
+  showForgetPage,
   loginPage,
   postLogin,
-  verifyOTP,
+  updatePassword,
+  signupOTP,
+  forgetOTP,
   checkLogin
 } = require("../controllers/auth.controller");
 
 const router = express.Router();
 
 router.route("/userLoggedIn").get(checkLogin);
-router.route("/forget").patch(updatePassword)
+router.route("/forget").get(showForgetPage).post(checkUser).patch(updatePassword)
+router.route('/forgetOTP').post(forgetOTP)
 router.route("/login").get(loginPage).post(postLogin);
 router.route("/signup").get(signupPage).post(postSignup);
-router.route('/verifyOTP').post(verifyOTP)
+router.route('/signupOTP').post(signupOTP)
 
 const authRouter = router;
 module.exports = authRouter;

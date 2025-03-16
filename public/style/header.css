@@ -90,7 +90,6 @@ nav ul {
 
 @media screen and (max-width: 635px) {
     header {
-        
         padding: 10px 5px;
     }
 
@@ -115,7 +114,7 @@ nav ul {
         background-color: var(--primary-grey-color);
         padding: 2rem 3rem;
         z-index: 99;
-        width: 50%;
+        width: 100%;
         position: absolute;
         display: flex;
         flex-direction: column;
@@ -127,9 +126,12 @@ nav ul {
         }
     }
 
-    .nav-link {
-        font-size: 10px;
+    .nav-link{
         padding: 1rem;        
+
+        & a{
+        font-size: 10px;
+        }
     }
 
     .theme {
