@@ -44,7 +44,8 @@ const sendOTP = async (email) => {
 
     try {
         await sgMail.send(msg);
-        console.log("OTP sent successfully to", email);
+        // console.log("OTP sent successfully to", email);
+        // console.log("otp", otp)
         return otp; // Return OTP so it can be used for verification
     } catch (error) {
         console.error("Error sending OTP:", error.response ? error.response.body : error.message);

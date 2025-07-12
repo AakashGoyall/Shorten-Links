@@ -164,15 +164,17 @@
                     })
 
                     const data = await res.json()
+                    document.getElementById('otp-value').value = ''
 
                     message.innerText = data.msg
                     message.style.display = 'flex'
                     setTimeout(() => {
                         message.style.display = "none"
                     }, 2000)
-                    console.log(data)
+
                     if (res.ok) {
-                        message.classList.remove("error-message")
+                        localStorage.setItem("token", data.token);
+                        message.classList.remove("error-message");
                         window.location.href = "/"
                         return ''
                     }
